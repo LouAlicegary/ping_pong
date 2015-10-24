@@ -73,7 +73,7 @@ class SlackCommandsController < ApplicationController
     def invalid_match_message
       return "Invalid `/pong match` command. Try:\n" +
         "`/pong match player_a beat player_b` = record a singles match\n" +
-        "`/pong match player_a / player_b beat player_c / player_d` = record a doubles match\n" +
+        "`/pong match player_a / player_b beat player_c / player_d` = record a doubles match\n"
     end
 
 
