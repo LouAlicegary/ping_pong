@@ -97,7 +97,7 @@ class SlackCommandsController < ApplicationController
 
     def parse_match_command full_command_array
       
-      if full_command_array.join(" ").split("/").length == 3 && full_command_array.include? "beat"
+      if full_command_array.join(" ").split("/").length == 3 && full_command_array.include?("beat")
         message = parse_doubles_match
       elsif full_command_array.length == 4 && full_command_array[2].downcase == "beat"
         message = parse_singles_match
@@ -120,7 +120,7 @@ class SlackCommandsController < ApplicationController
       loser_2 = Player.find_by(name: players_array[2].strip)
       
       if winner_1 && winner_2 && loser_1 && loser_2
-        Match.play_match_by_names { winner: [winner_1.name,winner_2.name], loser: [loser_1.name,loser_2.name] }
+        Match.play_match_by_names({ winner: [winner_1.name,winner_2.name], loser: [loser_1.name,loser_2.name] })
         message = "Match recorded successfully!\n\nNew Rankings:\n" + Player.rankings_list
       else
         message = invalid_player_message
@@ -137,7 +137,7 @@ class SlackCommandsController < ApplicationController
       loser = Player.find_by(name: full_command_array[3].to_s)
 
       if winner && loser
-        Match.play_match_by_names { winner: [winner.name], loser: [loser.name] }
+        Match.play_match_by_names({ winner: [winner.name], loser: [loser.name] })
         message = "Match recorded successfully!\n\nNew Rankings:\n" + Player.rankings_list
       else
         message = invalid_player_message
