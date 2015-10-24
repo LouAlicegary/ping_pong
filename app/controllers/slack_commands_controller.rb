@@ -63,6 +63,20 @@ class SlackCommandsController < ApplicationController
     end
 
 
+    def invalid_player_message
+      message = "Invalid player chosen.\n" + 
+        "Type `/pong player list` to see a list of all valid players.\n" +
+        "If you must add a player, type `/pong player add player_name` (only one-word names allowed)"
+    end
+
+
+    def invalid_match_message
+      return "Invalid `/pong match` command. Try:\n" +
+        "`/pong match player_a beat player_b` = record a singles match\n" +
+        "`/pong match player_a / player_b beat player_c / player_d` = record a doubles match\n" +
+    end
+
+
     def help_command_message
       
       return  "Here's a list of the commands you can use:\n" +
@@ -76,22 +90,58 @@ class SlackCommandsController < ApplicationController
     end
 
 
-    def parse_rank_command
-      return "rank"
+    def parse_rank_command full_command_array
+      return Player.rankings_list
     end
 
 
-    def parse_match_command
-        
-      if full_command_array.length == 3 && full_command_array[1] == "add"
-        message = "valid add player"
-      elsif full_command_array.length >= 2 && full_command_array[1] == "list"
-        message = "valid list player"
+    def parse_match_command full_command_array
+      
+      if full_command_array.join(" ").split("/").length == 3 && full_command_array.include? "beat"
+        message = parse_doubles_match
+      elsif full_command_array.length == 4 && full_command_array[2].downcase == "beat"
+        message = parse_singles_match
       else
-        message = "Invalid `/pong player` command. Try:\n" +
-          "`/pong player add lou` = add player \"lou\" (single name is best)\n" +
-          "`/pong player list` = list all players in the system"
+        message = invalid_match_message
       end 
+
+      return message
+
+    end
+
+
+    def parse_doubles_match full_command_array
+      
+      # chop off the word "match" and only deal w players and the word "beat"
+      players_array = full_command_array[1..-1].join(" ").split("/"))
+      winner_1 = Player.find_by(name: players_array.first.strip)
+      winner_2 = Player.find_by(name: players_array[1].split("beat")[0].strip)
+      loser_1 = Player.find_by(name: players_array[1].split("beat")[1].strip)
+      loser_2 = Player.find_by(name: players_array[2].strip)
+      
+      if winner_1 && winner_2 && loser_1 && loser_2
+        Match.play_match_by_names { winner: [winner_1.name,winner_2.name], loser: [loser_1.name,loser_2.name] }
+        message = "Match recorded successfully!\n\nNew Rankings:\n" + Player.rankings_list
+      else
+        message = invalid_player_message
+      end
+
+      return message
+
+    end
+
+
+    def parse_singles_match full_command_array
+      
+      winner = Player.find_by(name: full_command_array[1].to_s)
+      loser = Player.find_by(name: full_command_array[3].to_s)
+
+      if winner && loser
+        Match.play_match_by_names { winner: [winner.name], loser: [loser.name] }
+        message = "Match recorded successfully!\n\nNew Rankings:\n" + Player.rankings_list
+      else
+        message = invalid_player_message
+      end
 
       return message
 
@@ -101,9 +151,15 @@ class SlackCommandsController < ApplicationController
     def parse_player_command full_command_array
 
       if full_command_array.length == 3 && full_command_array[1] == "add"
-        message = "valid add player"
+        if Player.all.pluck(:name).include? full_command_array[2]
+          message = "The player you are trying to create already exists in the database."
+        else
+          Player.create({name: full_command_array[2], mu: 25, sigma: 25/3})
+          message = "Player added."
+        end
       elsif full_command_array.length >= 2 && full_command_array[1] == "list"
-        message = "valid list player"
+        message = "#{Player.all.count} players in the system.\n\n" + 
+          "#{Player.all.pluck(:name).join(", ")}"
       else
         message = "Invalid `/pong player` command. Try:\n" +
           "`/pong player add lou` = add player \"lou\" (no spaces in player name allowed)\n" +

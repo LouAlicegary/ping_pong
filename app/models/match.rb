@@ -26,7 +26,7 @@ class Match
     end
 
     # output hash format { winner: [{name: "Lou", rating: [#<Rating>..]}, {...}], loser: [{...}] }
-    def convert_plaintext_match_to_rating_match match_hash
+    def convert_name_match_to_rating_match match_hash
       
       winner_array = match_hash[:winner]
       loser_array = match_hash[:loser]
@@ -41,15 +41,16 @@ class Match
     def play_match_by_names match
       
       # output hash format { winner: [{name: "Lou", rating: [#<Rating>..]}, {...}], loser: [{...}] }
-      ratings_match_hash = Match.convert_plaintext_match_to_rating_match match
+      ratings_match_hash = Match.convert_name_match_to_rating_match match
 
       # create a SinglesMatch or DoublesMatch record for the match data
       create_match_record ratings_match_hash[:winner], ratings_match_hash[:loser]
 
       # update player records based on match results
-      Match.play_match_by_rankings ratings_match_hash[:winner], ratings_match_hash[:loser]
+      all_players_post = Match.play_match_by_rankings ratings_match_hash[:winner], ratings_match_hash[:loser]
     
-      Player.show_rankings_list
+      return all_players_post
+
     end
 
 
