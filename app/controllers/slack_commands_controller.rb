@@ -113,7 +113,7 @@ class SlackCommandsController < ApplicationController
     def parse_doubles_match full_command_array
       
       # chop off the word "match" and only deal w players and the word "beat"
-      players_array = full_command_array[1..-1].join(" ").split("/"))
+      players_array = full_command_array[1..-1].join(" ").split("/")
       winner_1 = Player.find_by(name: players_array.first.strip)
       winner_2 = Player.find_by(name: players_array[1].split("beat")[0].strip)
       loser_1 = Player.find_by(name: players_array[1].split("beat")[1].strip)
