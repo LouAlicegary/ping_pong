@@ -10,9 +10,9 @@ class Player < ActiveRecord::Base
       rank = 0
       cutoff = 5
 
-      cur_time = DateTime.now.in_time_zone("Eastern Time (US & Canada)").strftime("%m/%d/%Y%l:%M%p")
+      cur_time = DateTime.now.in_time_zone("Eastern Time (US & Canada)").strftime("%m/%d/%Y %I:%M%p")
       
-      message =  "\n\nMARKETPLACE HOMES - PING PONG PLAYER RATINGS [as of #{cur_time}] " +
+      message =  "\n\n```MARKETPLACE HOMES - PING PONG PLAYER RATINGS [as of #{cur_time}] " +
                  "=======================================================================\n"
 
       cut_array = []
@@ -34,7 +34,7 @@ class Player < ActiveRecord::Base
         end
       end
 
-      message += "\n(Minimum #{cutoff} games to qualify)\nPlayers who didn't qualify: #{cut_array.join(", ")}"
+      message += "\n(Minimum #{cutoff} games to qualify)\nPlayers who didn't qualify: #{cut_array.join(", ")}```"
 
       return message
 
