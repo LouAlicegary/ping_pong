@@ -34,7 +34,7 @@ class Player < ActiveRecord::Base
         end
       end
 
-      message += "\n(Minimum #{cutoff} games to qualify)\nPlayers who didn't qualify: #{cut_array.join(", ")[0..-3]}"
+      message += "\n(Minimum #{cutoff} games to qualify)\nPlayers who didn't qualify: #{cut_array.join(", ")}"
 
       return message
 
