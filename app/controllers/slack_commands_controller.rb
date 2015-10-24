@@ -98,9 +98,9 @@ class SlackCommandsController < ApplicationController
     def parse_match_command full_command_array
       
       if full_command_array.join(" ").split("/").length == 3 && full_command_array.include?("beat")
-        message = parse_doubles_match
+        message = parse_doubles_match full_command_array
       elsif full_command_array.length == 4 && full_command_array[2].downcase == "beat"
-        message = parse_singles_match
+        message = parse_singles_match full_command_array
       else
         message = invalid_match_message
       end 
