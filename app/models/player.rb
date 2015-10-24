@@ -28,7 +28,7 @@ class Player < ActiveRecord::Base
         
         if (sw+sl+dw+dl >= cutoff)
           rank += 1
-          message += "#{(rank).to_s.ljust(2," ")} #{player["name"].upcase.ljust(10," ")}    Singles: #{sw.to_s.rjust(2," ")} - #{sl.to_s.ljust(2," ")}    Doubles: #{dw.to_s.rjust(2," ")} - #{dl.to_s.ljust(2," ")}  (#{player["mu"].round(3).to_s} points)"
+          message += "#{(rank).to_s.ljust(2," ")} #{player["name"].upcase.ljust(10," ")}    Singles: #{sw.to_s.rjust(2," ")} - #{sl.to_s.ljust(2," ")}    Doubles: #{dw.to_s.rjust(2," ")} - #{dl.to_s.ljust(2," ")}  (#{player["mu"].round(3).to_s} points)\n"
         else
           cut_array << player["name"]
         end
