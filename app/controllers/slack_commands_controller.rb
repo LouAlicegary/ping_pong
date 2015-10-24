@@ -25,7 +25,7 @@ class SlackCommandsController < ApplicationController
 
 
     def authenticate_command
-      return params[:team_id] == ENV["SLACK_TEAM_ID"] && params[:command] == "/pong"
+      return params[:token] == ENV["SLACK_TOKEN"] && params[:command] == "/pong"
     end
 
 

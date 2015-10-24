@@ -13,7 +13,7 @@ class Player < ActiveRecord::Base
       cur_time = DateTime.now.in_time_zone("Eastern Time (US & Canada)").strftime("%m/%d/%Y%l:%M%p")
       
       message =  "\n\nMARKETPLACE HOMES - PING PONG PLAYER RATINGS [as of #{cur_time}] " +
-                 "======================================================================="
+                 "=======================================================================\n"
 
       cut_array = []
 
@@ -26,7 +26,7 @@ class Player < ActiveRecord::Base
         dw = DoublesMatch.where("winner_1 = ? OR winner_2 = ?", player_id, player_id).count
         dl = DoublesMatch.where("loser_1 = ? OR loser_2 = ?", player_id, player_id).count
         
-        if (sw+sl+dw+dl > cutoff)
+        if (sw+sl+dw+dl >= cutoff)
           rank += 1
           message += "#{(rank).to_s.ljust(2," ")} #{player["name"].upcase.ljust(10," ")}    Singles: #{sw.to_s.rjust(2," ")} - #{sl.to_s.ljust(2," ")}    Doubles: #{dw.to_s.rjust(2," ")} - #{dl.to_s.ljust(2," ")}  (#{player["mu"].round(3).to_s} points)"
         else
