@@ -12,7 +12,7 @@ class Player < ActiveRecord::Base
 
       cur_time = DateTime.now.in_time_zone("Eastern Time (US & Canada)").strftime("%m/%d/%Y %I:%M%p")
       
-      message =  "\n\n```MARKETPLACE HOMES - PING PONG PLAYER RATINGS [as of #{cur_time}] " +
+      message =  "\n\n```MARKETPLACE HOMES - PING PONG PLAYER RATINGS [as of #{cur_time}]\n" +
                  "=======================================================================\n"
 
       cut_array = []
