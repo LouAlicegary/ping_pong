@@ -80,13 +80,12 @@ class SlackCommandsController < ApplicationController
     def help_command_message
       
       return  "Here's a list of the commands you can use:\n" +
-        "`/pong help` = this command\n" +
-        "`/pong rank` = view player rankings\n" +
-        "`/pong match player_a beat player_b` = record a singles match\n" + 
-        "`/pong match player_a / player_b beat player_c / player_d` = record a doubles match\n" +
-        "`/pong player list` = get a list of players (useful if you must record a match / add a player)\n" +
-        "`/pong player add player_name` = add a player to the system" 
-    
+        "get help: `/pong help`\n" +
+        "view player rankings: `/pong rank`\n" +
+        "record a singles match: `/pong match bobby beat paul`\n" + 
+        "record a doubles match: `/pong match susan / amy beat nancy / tina`\n" +
+        "add a player to the system: `/pong player add jonathan`" +
+        "get a list of players: `/pong player list` (useful if you must record a match / add a player)\n"
     end
 
 
