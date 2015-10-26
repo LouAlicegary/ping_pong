@@ -83,8 +83,8 @@ class SlackCommandsController < ApplicationController
         "get help: `/pong help`\n" +
         "view player rankings: `/pong rank`\n" +
         "record a singles match: `/pong match bobby beat paul`\n" + 
-        "record a doubles match: `/pong match susan / amy beat nancy / tina`\n" +
-        "add a player to the system: `/pong player add jonathan`" +
+        "record a doubles match: `/pong match susan/amy beat nancy/tina`\n" +
+        "add a player to the system: `/pong player add jonathan`\n" +
         "get a list of players: `/pong player list` (useful if you must record a match / add a player)\n"
     end
 
