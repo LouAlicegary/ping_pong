@@ -2,7 +2,7 @@ class Match
 
   class << self
 
-    include TrueSkillGeneral
+    include TrueSkill::TrueSkillGeneral
 
 
     # Team 1 is the winner, team 2 is the loser
@@ -63,12 +63,12 @@ class Match
 
         winner_array.each do |w|
           player = Player.find_by(name: w.downcase)
-          new_winner_array.push({name: w.downcase, rating: Rating.new(player.mu, player.sigma)}) if player
+          new_winner_array.push({name: w.downcase, rating: TrueSkill::Rating.new(player.mu, player.sigma)}) if player
         end
 
         loser_array.each do |w|
           player = Player.find_by(name: w.downcase)
-          new_loser_array.push({name: w.downcase, rating: Rating.new(player.mu, player.sigma)}) if player
+          new_loser_array.push({name: w.downcase, rating: TrueSkill::Rating.new(player.mu, player.sigma)}) if player
         end
 
         return { winner: new_winner_array, loser: new_loser_array }

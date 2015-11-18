@@ -34,7 +34,7 @@ class Competition
 
       end
 
-      Player.display_rankings_list
+      Player.rankings_list
 
       return 1
 

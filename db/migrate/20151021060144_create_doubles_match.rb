@@ -5,6 +5,7 @@ class CreateDoublesMatch < ActiveRecord::Migration
       t.integer :winner_2
       t.integer :loser_1
       t.integer :loser_2
+      t.timestamps
     end
   end
 end

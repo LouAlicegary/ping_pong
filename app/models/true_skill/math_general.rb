@@ -1,4 +1,4 @@
-module MathGeneral
+module TrueSkill::MathGeneral
 
 
   def ierfcc(p)

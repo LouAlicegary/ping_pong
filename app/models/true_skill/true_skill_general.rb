@@ -1,4 +1,4 @@
-module TrueSkillGeneral
+module TrueSkill::TrueSkillGeneral
 
 
   MU=25.0

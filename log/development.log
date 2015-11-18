@@ -3485,3 +3485,21 @@ Mysql2::Error: Table 'rankings.singles_match' doesn't exist: ALTER TABLE `single
 Migrating to AddTimestampsToSinglesAndDoubles (20151021163600)
 Migrating to AddTimestampsToSinglesAndDoubles (20151021163600)
 Migrating to AddTimestampsToSinglesAndDoubles (20151021163600)
+Migrating to CreatePlayer (20151021031056)
+Migrating to CreateSinglesMatch (20151021060050)
+Migrating to CreateDoublesMatch (20151021060144)
+Migrating to AddTimestampsToSinglesAndDoubles (20151021163600)
+PG::UndefinedObject: ERROR:  type "datetime" does not exist
+LINE 1: ALTER TABLE "singles_matches" ADD "created_at" DateTime
+                                                       ^
+: ALTER TABLE "singles_matches" ADD "created_at" DateTime
+Migrating to CreatePlayer (20151021031056)
+Migrating to CreateSinglesMatch (20151021060050)
+DEPRECATION WARNING: `#timestamps` was called without specifying an option for `null`. In Rails 5, this behavior will change to `null: false`. You should manually specify `null: true` to prevent the behavior of your existing migrations from changing. (called from block in change at /Users/loualicegary/ping_pong/db/migrate/20151021060050_create_singles_match.rb:6)
+Migrating to CreateDoublesMatch (20151021060144)
+DEPRECATION WARNING: `#timestamps` was called without specifying an option for `null`. In Rails 5, this behavior will change to `null: false`. You should manually specify `null: true` to prevent the behavior of your existing migrations from changing. (called from block in change at /Users/loualicegary/ping_pong/db/migrate/20151021060144_create_doubles_match.rb:8)
+Migrating to CreatePlayer (20151021031056)
+Migrating to CreateSinglesMatch (20151021060050)
+DEPRECATION WARNING: `#timestamps` was called without specifying an option for `null`. In Rails 5, this behavior will change to `null: false`. You should manually specify `null: true` to prevent the behavior of your existing migrations from changing. (called from block in change at /Users/loualicegary/ping_pong/db/migrate/20151021060050_create_singles_match.rb:6)
+Migrating to CreateDoublesMatch (20151021060144)
+DEPRECATION WARNING: `#timestamps` was called without specifying an option for `null`. In Rails 5, this behavior will change to `null: false`. You should manually specify `null: true` to prevent the behavior of your existing migrations from changing. (called from block in change at /Users/loualicegary/ping_pong/db/migrate/20151021060144_create_doubles_match.rb:8)
