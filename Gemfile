@@ -46,7 +46,7 @@ gem 'active_model_serializers'
 # gem 'capistrano-rails', group: :development
 
 # THE BEST GEM EVER
-gem 'true_skill'
+gem 'true_skill', :git => "git://github.com/LouAlicegary/true_skill.git"
 
 
 group :development, :test do
