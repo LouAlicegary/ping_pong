@@ -19,9 +19,9 @@ class Api::V1::SlackCommandsController < ApplicationController
   private
 
 
-    # Used to ensure there's a slack token provided and that the command starts with the correct syntax
+    # Used to ensure there's a slack token associated with the caller (this is just stubbed for now)
     def authenticate_command
-      render json: {error: "Invalid Slack token."}, status: 404 unless params[:token] == ENV["SLACK_TOKEN"]
+      render json: {error: "Unauthorized. Invalid Slack token."}, status: 401 unless params[:token] == ENV["SLACK_TOKEN"]
     end
 
 
