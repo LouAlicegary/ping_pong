@@ -1,0 +1,24 @@
+abe:
+  name: abe
+  mu: 25
+  sigma: 8.3333
+
+boris:
+  name: boris
+  mu: 25
+  sigma: 8.3333
+
+carly: 
+  name: carly
+  mu: 25
+  sigma: 8.3333
+
+diana: 
+  name: diana
+  mu: 25
+  sigma: 8.3333
+
+esther:
+  name: esther
+  mu: 25
+  sigma: 8.3333

@@ -25,5 +25,9 @@ module Rankings
 
     config.log_level = :info
     
+    config.generators do |g|
+      g.test_framework :minitest, spec: true
+    end
+    
   end
 end

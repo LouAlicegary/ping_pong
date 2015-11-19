@@ -6,12 +6,13 @@ class Match
     # Team 1 is the winner, team 2 is the loser
     def play_match_by_rankings team1, team2, win_array = [0,1]
       
+      # These are both TrueSkill::Rating objects
       team1_ratings = team1.map{|h| h[:rating]}
       team2_ratings = team2.map{|h| h[:rating]}
       
       ts = TrueSkill::TrueSkill.new
       results_array = ts.transform_ratings([team1_ratings, team2_ratings], win_array)
-      
+
       ratings_array = results_array[0].concat results_array[1]
       names_array = team1.concat(team2).map{|h| h[:name]}
 

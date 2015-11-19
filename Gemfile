@@ -51,9 +51,20 @@ gem 'true_skill'
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
-    gem 'pry-rails'
+
+  # Pry
+  gem 'pry-rails'
   gem 'pry-byebug'
   gem 'binding_of_caller'
+
+  # Guard to auto-run tests
+  gem 'guard'
+  gem 'guard-rails'
+  gem 'guard-minitest'
+
+  gem 'minitest'
+  gem 'minitest-rails'
+
 end
 
 group :development do

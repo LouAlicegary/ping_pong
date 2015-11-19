@@ -1,6 +1,14 @@
 Rails.application.routes.draw do
 
-  post "slack_commands/parse", to: "slack_commands#parse"
+  namespace :api do
+  
+    namespace :v1 do
+    
+      post "slack_commands/parse", to: "slack_commands#parse"
+    
+    end
+
+  end
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
