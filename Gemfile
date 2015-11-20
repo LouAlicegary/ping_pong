@@ -45,6 +45,9 @@ gem 'active_model_serializers'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
+# Make cross-domain JSON possible
+gem 'rack-cors', :require => 'rack/cors'
+
 # THE BEST GEM EVER
 gem 'true_skill', :git => "git://github.com/LouAlicegary/true_skill.git"
 
