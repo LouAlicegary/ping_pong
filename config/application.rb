@@ -23,7 +23,7 @@ module Rankings
     # Do not swallow errors in after_commit/after_rollback callbacks.
     config.active_record.raise_in_transactional_callbacks = true
 
-    config.log_level = :info
+    config.log_level = :debug
     
     config.generators do |g|
       g.test_framework :minitest, spec: true

@@ -1,8 +1,24 @@
 class Player < ActiveRecord::Base
 
-  # :name, :mu, :sigma
+
+  has_many :group_memberships
+  has_many :groups, through: :group_memberships
+
+  #has_many :singles_matches
+  #has_many :doubles_matches
+
+
+  def singles_matches
+    SinglesMatch.where("winner = ? OR loser = ?", self.id, self.id)
+  end
+
+  def doubles_matches
+    DoublesMatch.where("winner_1 = ? OR winner_2 = ? OR loser_1 = ? OR loser_2 = ?", self.id, self.id, self.id, self.id)
+  end
+
 
   class << self
+
 
     def rankings_list
       player_array = Player.all.order(mu: :desc).as_json

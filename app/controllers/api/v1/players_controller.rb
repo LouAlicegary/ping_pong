@@ -2,13 +2,18 @@ class Api::V1::PlayersController < ApplicationController
 
 
   def index
-    render json: Player.all # This is processed by an Active Model serializer in app/serializers
+    render json: Player.all
   end
 
 
   def create
     player = Player.create(prep_create_params)
-    render json: player # This is processed by an Active Model serializer in app/serializers
+    render json: player
+  end
+
+
+  def show
+    render json: Player.find(prep_show_params), serializer: PlayerSerializerWithGroups, root: :player
   end
 
 
@@ -17,7 +22,12 @@ class Api::V1::PlayersController < ApplicationController
     def prep_create_params
       params[:player][:mu] = 25
       params[:player][:sigma] = 25.0/3.0
-      params.require(:player).permit(:name, :mu, :sigma)
+      return params.require(:player).permit(:name, :mu, :sigma)
+    end
+
+
+    def prep_show_params
+      params.require(:id)
     end
 
 

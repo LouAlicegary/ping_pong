@@ -69,6 +69,8 @@ group :development, :test do
   gem 'minitest'
   gem 'minitest-rails'
 
+  gem 'bullet'
+
 end
 
 group :development do
