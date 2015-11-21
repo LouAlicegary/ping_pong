@@ -1,98 +1,116 @@
-class Match
+class Match < ActiveRecord::Base
 
   class << self
 
 
     # Team 1 is the winner, team 2 is the loser
-    def play_match_by_rankings team1, team2, win_array = [0,1]
-      
-      # These are both TrueSkill::Rating objects
-      team1_ratings = team1.map{|h| h[:rating]}
-      team2_ratings = team2.map{|h| h[:rating]}
-      
-      ts = TrueSkill::TrueSkill.new
-      results_array = ts.transform_ratings([team1_ratings, team2_ratings], win_array)
+    # TODO: THIS SHOULD BE MADE EXTENSIBLE TO HANDLE FREE FOR ALLS
+    def play winner_ids_array, loser_ids_array, win_array = [0,1]
 
-      ratings_array = results_array[0].concat results_array[1]
-      names_array = team1.concat(team2).map{|h| h[:name]}
+      pre_match_ratings = build_pre_match_rating_array winner_ids_array, loser_ids_array
+      post_match_ratings = calculate_post_match_ratings pre_match_ratings, win_array
 
-      # update player record with new ratings
-      names_array.each_with_index do |name, index|
-        this_rating = ratings_array[index]
-        Player.find_by(name: name).update({mu: this_rating.mu, sigma: this_rating.sigma})
-      end
+      # Creates match and match_player records and updates player records with new ratings
+      create_match_record winner_ids_array, loser_ids_array, pre_match_ratings, post_match_ratings
+      updated_players = update_player_records winner_ids_array, loser_ids_array, pre_match_ratings, post_match_ratings
 
-      return Player.all.as_json
+      return updated_players.as_json
     
-    end
-
-    # output hash format { winner: [{name: "Lou", rating: [#<Rating>..]}, {...}], loser: [{...}] }
-    def convert_name_match_to_rating_match match_hash
-      
-      winner_array = match_hash[:winner]
-      loser_array = match_hash[:loser]
-
-      # convert arrays of plaintext names to player ratings
-      return convert_name_arrays_to_rating_arrays winner_array, loser_array
-
     end
 
 
     # match hash format: { winner: ["Lou","Jacob"], loser: ["Dustin","Tobe"] }
     def play_match_by_names match
       
-      # output hash format { winner: [{name: "Lou", rating: [#<Rating>..]}, {...}], loser: [{...}] }
-      ratings_match_hash = Match.convert_name_match_to_rating_match match
+      player_ids = convert_name_arrays_to_id_arrays match
 
-      # create a SinglesMatch or DoublesMatch record for the match data
-      create_match_record ratings_match_hash[:winner], ratings_match_hash[:loser]
-
-      # update player records based on match results
-      all_players_post = Match.play_match_by_rankings ratings_match_hash[:winner], ratings_match_hash[:loser]
+      all_players_post_match = Match.play player_ids[:winner], player_ids[:loser]
     
-      return all_players_post
+      return all_players_post_match
 
     end
 
 
     private
 
-      def convert_name_arrays_to_rating_arrays winner_array, loser_array
 
-        new_winner_array = []
-        new_loser_array = []
+      def build_pre_match_rating_array winner_ids_array, loser_ids_array
+        
+        winner_rating_array = []
+        loser_rating_array = []
 
-        winner_array.each do |w|
-          player = Player.find_by(name: w.downcase)
-          new_winner_array.push({name: w.downcase, rating: TrueSkill::Rating.new(player.mu, player.sigma)}) if player
+        winner_ids_array.each do |player_id|
+          player = Player.find_by(id: player_id)
+          winner_rating_array.push(TrueSkill::Rating.new(player.mu, player.sigma)) if player
         end
 
-        loser_array.each do |w|
-          player = Player.find_by(name: w.downcase)
-          new_loser_array.push({name: w.downcase, rating: TrueSkill::Rating.new(player.mu, player.sigma)}) if player
+        loser_ids_array.each do |player_id|
+          player = Player.find_by(id: player_id)
+          loser_rating_array.push(TrueSkill::Rating.new(player.mu, player.sigma)) if player
         end
+        
+        return [winner_rating_array, loser_rating_array]
 
-        return { winner: new_winner_array, loser: new_loser_array }
+      end
+
+
+      # This method can take singles, doubles, or free-for-alls
+      def calculate_post_match_ratings pre_match_ratings, win_array
+        
+        ts = TrueSkill::TrueSkill.new
+        post_match_ratings = ts.transform_ratings(pre_match_ratings, win_array)
+
+        return post_match_ratings
 
       end
 
 
       # create a SinglesMatch or DoublesMatch record for the match data
-      def create_match_record winner_array, loser_array
+      def create_match_record winner_array, loser_array, pre_match_ratings, post_match_ratings
 
         if winner_array.length > 1
-          w1 = Player.find_by(name: winner_array[0][:name]).id
-          w2 = Player.find_by(name: winner_array[1][:name]).id
-          l1 = Player.find_by(name: loser_array[0][:name]).id
-          l2 = Player.find_by(name: loser_array[1][:name]).id
-          DoublesMatch.create({winner_1: w1, winner_2: w2, loser_1: l1, loser_2: l2})
+          w1 = winner_array[0]
+          w2 = winner_array[1]
+          l1 = loser_array[0]
+          l2 = loser_array[1]
+          match = DoublesMatch.create({winner_1: w1, winner_2: w2, loser_1: l1, loser_2: l2})
         else
-          w = Player.find_by(name: winner_array[0][:name]).id
-          l = Player.find_by(name: loser_array[0][:name]).id
-          SinglesMatch.create({winner: w, loser: l})
+          w = winner_array[0]
+          l = loser_array[0]
+          match = SinglesMatch.create({winner: w, loser: l})
         end
       
+        return match
+
       end
+
+
+      # update player records with new ratings
+      def update_player_records winner_ids_array, loser_ids_array, pre_match_ratings, post_match_ratings
+
+        new_ratings_array = post_match_ratings[0].concat post_match_ratings[1]
+        ids_array = winner_ids_array.concat(loser_ids_array)
+        
+        ids_array.each_with_index do |id, index|
+          new_rating = new_ratings_array[index]
+          Player.find_by(id: id).update({mu: new_rating.mu, sigma: new_rating.sigma})
+        end
+
+        return Player.where(id: ids_array)
+
+      end
+
+
+      def convert_name_arrays_to_id_arrays match_hash
+        
+        winner_array = match_hash[:winner].map{|a| Player.find_by(name: a.downcase).id}
+        loser_array = match_hash[:loser].map{|a| Player.find_by(name: a.downcase).id}
+
+        return { winner: winner_array, loser: loser_array }
+
+      end
+
+
 
   end
 

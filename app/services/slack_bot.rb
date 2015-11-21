@@ -1,4 +1,5 @@
-class SlackBot
+module SlackBot
+
 
   class << self
 
@@ -24,25 +25,12 @@ class SlackBot
 
       def parse_and_execute_slash_command slash_command, command_details
         if slash_command == "/pong"
-          return PongBot.execute_command command_details
+          bot_class = PongBot
+          return bot_class.execute_command command_details
         else
           return SlackBot::Messages.invalid_slash_command
         end
       end
-
-
-  end
-
-
-  class Messages
-
-    class << self
-
-      def invalid_slash_command
-        return "Invalid slash command. Try again."
-      end
-
-    end
 
 
   end
