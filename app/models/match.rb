@@ -1,5 +1,13 @@
 class Match < ActiveRecord::Base
 
+
+  has_many :match_players
+  has_many :players, through: :match_players
+
+  scope :singles, -> { where(match_type: "singles") }
+  scope :doubles, -> { where(match_type: "doubles") }
+
+
   class << self
 
 
@@ -11,24 +19,13 @@ class Match < ActiveRecord::Base
       post_match_ratings = calculate_post_match_ratings pre_match_ratings, win_array
 
       # Creates match and match_player records and updates player records with new ratings
-      create_match_record winner_ids_array, loser_ids_array, pre_match_ratings, post_match_ratings
+      create_match_records winner_ids_array, loser_ids_array, pre_match_ratings, post_match_ratings
       updated_players = update_player_records winner_ids_array, loser_ids_array, pre_match_ratings, post_match_ratings
 
       return updated_players.as_json
     
     end
 
-
-    # match hash format: { winner: ["Lou","Jacob"], loser: ["Dustin","Tobe"] }
-    def play_match_by_names match
-      
-      player_ids = convert_name_arrays_to_id_arrays match
-
-      all_players_post_match = Match.play player_ids[:winner], player_ids[:loser]
-    
-      return all_players_post_match
-
-    end
 
 
     private
@@ -66,18 +63,25 @@ class Match < ActiveRecord::Base
 
 
       # create a SinglesMatch or DoublesMatch record for the match data
-      def create_match_record winner_array, loser_array, pre_match_ratings, post_match_ratings
+      def create_match_records winner_array, loser_array, pre_match_ratings, post_match_ratings
 
-        if winner_array.length > 1
-          w1 = winner_array[0]
-          w2 = winner_array[1]
-          l1 = loser_array[0]
-          l2 = loser_array[1]
-          match = DoublesMatch.create({winner_1: w1, winner_2: w2, loser_1: l1, loser_2: l2})
-        else
-          w = winner_array[0]
-          l = loser_array[0]
-          match = SinglesMatch.create({winner: w, loser: l})
+        # Create the Match record
+        match_type = (winner_array.length > 1) ? "doubles" : "singles"
+        match = Match.create({match_type: match_type})
+
+        # Create a MatchPlayer record for each player
+        all_ids_array = winner_array + loser_array
+        all_ids_array.each_with_index do |player_id, index|
+          outcome = (winner_array.include? player_id) ? 1 : 2
+          MatchPlayer.create({
+            match_id: match.id,
+            player_id: player_id,
+            outcome: outcome,
+            mu_pre: pre_match_ratings[outcome - 1][ (index > 1) ? 1 : 0 ].mu,
+            mu_post: post_match_ratings[outcome - 1][ (index > 1) ? 1 : 0 ].mu,
+            sigma_pre: pre_match_ratings[outcome - 1][ (index > 1) ? 1 : 0 ].sigma,
+            sigma_post: post_match_ratings[outcome - 1][ (index > 1) ? 1 : 0 ].sigma
+          })
         end
       
         return match
@@ -88,8 +92,8 @@ class Match < ActiveRecord::Base
       # update player records with new ratings
       def update_player_records winner_ids_array, loser_ids_array, pre_match_ratings, post_match_ratings
 
-        new_ratings_array = post_match_ratings[0].concat post_match_ratings[1]
-        ids_array = winner_ids_array.concat(loser_ids_array)
+        new_ratings_array = post_match_ratings[0] + post_match_ratings[1]
+        ids_array = winner_ids_array + loser_ids_array
         
         ids_array.each_with_index do |id, index|
           new_rating = new_ratings_array[index]
@@ -97,16 +101,6 @@ class Match < ActiveRecord::Base
         end
 
         return Player.where(id: ids_array)
-
-      end
-
-
-      def convert_name_arrays_to_id_arrays match_hash
-        
-        winner_array = match_hash[:winner].map{|a| Player.find_by(name: a.downcase).id}
-        loser_array = match_hash[:loser].map{|a| Player.find_by(name: a.downcase).id}
-
-        return { winner: winner_array, loser: loser_array }
 
       end
 

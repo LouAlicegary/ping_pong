@@ -22,22 +22,21 @@ GroupMembership.create!([
   {group_id: 2, player_id: 4},
 ])
 
-DoublesMatch.delete_all
-DoublesMatch.create!([
-  {winner_1: 1, winner_2: 3, loser_1: 2, loser_2: 4},
-  {winner_1: 1, winner_2: 3, loser_1: 2, loser_2: 4},
-  {winner_1: 2, winner_2: 4, loser_1: 1, loser_2: 3},
-  {winner_1: 2, winner_2: 4, loser_1: 1, loser_2: 3},
-  {winner_1: 1, winner_2: 3, loser_1: 2, loser_2: 4},
-  {winner_1: 1, winner_2: 3, loser_1: 2, loser_2: 4},
-])
+Match.delete_all
+MatchPlayer.delete_all
 
-SinglesMatch.delete_all
-SinglesMatch.create!([
-  {winner: 1, loser: 2},
-  {winner: 1, loser: 4},
-  {winner: 1, loser: 2},
-  {winner: 3, loser: 4},
-  {winner: 3, loser: 1},
-  {winner: 4, loser: 3},
-])
+Match.play([1,3],[2,4])
+Match.play([1,3],[2,4])
+Match.play([2,4],[1,3])
+Match.play([2,4],[1,3])
+Match.play([1,3],[2,4])
+Match.play([1,3],[2,4])
+
+Match.play([1],[2])
+Match.play([1],[4])
+Match.play([1],[2])
+Match.play([3],[4])
+Match.play([3],[1])
+Match.play([4],[3])
+
+

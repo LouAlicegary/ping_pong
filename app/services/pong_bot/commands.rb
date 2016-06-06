@@ -23,7 +23,8 @@ module PongBot
 
       # Displays a list of player rankings
       def rank
-        return Player.rankings_list
+        message = PongBot::Messages.player_rankings_message
+        return message
       end
 
 
@@ -83,7 +84,7 @@ module PongBot
           loser_2 = Player.find_by(name: players_array[2].strip)
           
           if winner_1 && winner_2 && loser_1 && loser_2
-            Match.play_match_by_names({ winner: [winner_1.name,winner_2.name], loser: [loser_1.name,loser_2.name] })
+            play_match_by_names({ winner: [winner_1.name,winner_2.name], loser: [loser_1.name,loser_2.name] })
             message = PongBot::Messages.match_recorded_successfully
           else
             message = PongBot::Messages.invalid_player_message
@@ -100,7 +101,7 @@ module PongBot
           loser = Player.find_by(name: pong_command_array[3].to_s)
 
           if winner && loser
-            Match.play_match_by_names({ winner: [winner.name], loser: [loser.name] })
+            play_match_by_names({ winner: [winner.name], loser: [loser.name] })
             message = PongBot::Messages.match_recorded_successfully
           else
             message = PongBot::Messages.invalid_player_message
@@ -109,6 +110,28 @@ module PongBot
           return message
 
         end
+
+
+        # incoming match hash format: { winner: ["Lou","Jacob"], loser: ["Dustin","Tobe"] }
+        def play_match_by_names match
+          
+          player_ids = convert_name_arrays_to_id_arrays match
+
+          all_players_post_match = Match.play player_ids[:winner], player_ids[:loser]
+        
+          return all_players_post_match
+
+        end
+
+
+        def convert_name_arrays_to_id_arrays match_hash
+        
+          winner_array = match_hash[:winner].map{|a| Player.find_by(name: a.downcase).id}
+          loser_array = match_hash[:loser].map{|a| Player.find_by(name: a.downcase).id}
+
+        return { winner: winner_array, loser: loser_array }
+
+      end
 
 
     end # self

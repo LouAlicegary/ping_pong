@@ -11,19 +11,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151120201223) do
+ActiveRecord::Schema.define(version: 20151121183033) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
-  create_table "doubles_matches", force: :cascade do |t|
-    t.integer  "winner_1"
-    t.integer  "winner_2"
-    t.integer  "loser_1"
-    t.integer  "loser_2"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
 
   create_table "group_memberships", force: :cascade do |t|
     t.integer  "group_id"
@@ -38,17 +29,28 @@ ActiveRecord::Schema.define(version: 20151120201223) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "match_players", force: :cascade do |t|
+    t.integer  "match_id"
+    t.integer  "player_id"
+    t.integer  "outcome"
+    t.decimal  "mu_pre"
+    t.decimal  "mu_post"
+    t.decimal  "sigma_pre"
+    t.decimal  "sigma_post"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "matches", force: :cascade do |t|
+    t.string   "match_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "players", force: :cascade do |t|
     t.string  "name"
     t.decimal "mu",    precision: 10, scale: 8
     t.decimal "sigma", precision: 10, scale: 8
-  end
-
-  create_table "singles_matches", force: :cascade do |t|
-    t.integer  "winner"
-    t.integer  "loser"
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
 end

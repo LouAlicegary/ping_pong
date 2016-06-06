@@ -2,7 +2,7 @@
 # http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
 
 one:
-  name: MyString
+  name: Drive
 
 two:
-  name: MyString
+  name: Walk

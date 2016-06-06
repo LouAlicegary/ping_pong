@@ -4,13 +4,10 @@ Rails.application.routes.draw do
   
     namespace :v1 do
     
-      resources :groupmemberships
-
       resources :groups
-
-      resources :singles
-
       resources :players
+      resources :matches
+      resources :match_players
 
       post "slack_commands/parse", to: "slack_commands#parse"
     

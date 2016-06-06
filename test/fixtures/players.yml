@@ -1,24 +1,29 @@
 abe:
+  id: 1
   name: abe
   mu: 25
   sigma: 8.3333
 
 boris:
+  id: 2
   name: boris
   mu: 25
   sigma: 8.3333
 
 carly: 
+  id: 3
   name: carly
   mu: 25
   sigma: 8.3333
 
 diana: 
+  id: 4
   name: diana
   mu: 25
   sigma: 8.3333
 
 esther:
+  id: 5
   name: esther
   mu: 25
   sigma: 8.3333
